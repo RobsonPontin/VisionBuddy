@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:VisionBuddy"
+             x:Class="VisionBuddy.MainPage">
+
+    <StackLayout>
+
+        <Label x:Name="lbWelcome" Text="Welcome to Xamarin Forms! This is a Test!!!!" 
+           VerticalOptions="Center" 
+           HorizontalOptions="Center" />
+
+        <ListView x:Name="lvDisplay" />
+
+        <Button x:Name="btLoadSMS" Text="Click Me!"/>
+
+    </StackLayout>
+
+</ContentPage>
