@@ -27,7 +27,7 @@ namespace VisionBuddy.Droid
         }
 
         public List<SMSMessage> SMSItems = new List<SMSMessage>();
-        
+
         public enum SMSType
         {
             Inbox,

@@ -4,16 +4,25 @@
              xmlns:local="clr-namespace:VisionBuddy"
              x:Class="VisionBuddy.MainPage">
 
-    <StackLayout>
+    <StackLayout x:Name="stackLayoutMain" Orientation="Vertical">
 
-        <Label x:Name="lbWelcome" Text="Welcome to Xamarin Forms! This is a Test!!!!" 
+        <StackLayout x:Name="stackLayout" VerticalOptions="FillAndExpand" Orientation="Vertical">
+
+            <Label x:Name="lbWelcome" Text="Welcome to Xamarin Forms! This is a Test!!!!" 
            VerticalOptions="Center" 
            HorizontalOptions="Center" />
 
-        <ListView x:Name="lvDisplay" />
+            <ListView x:Name="lvDisplay" />
 
-        <Button x:Name="btLoadSMS" Text="Click Me!"/>
+        </StackLayout>
 
+        <StackLayout x:Name="stackLayoutBottom" HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+
+            <Button x:Name="btLoadSentSMS" Text="Load Sent" HorizontalOptions="FillAndExpand"
+                local:AccessibilityEffect.AccessibilityLabel="Load Sent SMS"/>
+            <Button x:Name="btLoadInboxSMS" Text="Load Inbox" HorizontalOptions="FillAndExpand"
+                local:AccessibilityEffect.AccessibilityLabel="Load Inbox SMS"/>
+
+        </StackLayout>
     </StackLayout>
-
 </ContentPage>
