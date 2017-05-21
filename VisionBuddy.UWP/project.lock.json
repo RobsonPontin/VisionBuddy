@@ -22246,10 +22246,10 @@
   },
   "project": {
     "restore": {
-      "projectUniqueName": "C:\\Users\\Robson\\Documents\\Visual Studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\VisionBuddy.UWP\\VisionBuddy.UWP.csproj",
+      "projectUniqueName": "C:\\Users\\Robson\\documents\\visual studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\VisionBuddy.UWP\\VisionBuddy.UWP.csproj",
       "projectName": "VisionBuddy.UWP",
-      "projectPath": "C:\\Users\\Robson\\Documents\\Visual Studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\VisionBuddy.UWP\\VisionBuddy.UWP.csproj",
-      "projectJsonPath": "C:\\Users\\Robson\\Documents\\Visual Studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\VisionBuddy.UWP\\project.json",
+      "projectPath": "C:\\Users\\Robson\\documents\\visual studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\VisionBuddy.UWP\\VisionBuddy.UWP.csproj",
+      "projectJsonPath": "C:\\Users\\Robson\\documents\\visual studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\VisionBuddy.UWP\\project.json",
       "projectStyle": "ProjectJson"
     },
     "dependencies": {

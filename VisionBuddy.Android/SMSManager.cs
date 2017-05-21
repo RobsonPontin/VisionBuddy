@@ -1,30 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.Database;
+using System.Collections.Generic;
+using static VisionBuddy.Droid.ContactManager;
 
 namespace VisionBuddy.Droid
 {
     class SMSManager
     {
+
+
         private const string URI_INBOX = "content://sms/inbox";
         private const string URI_SENT = "content://sms/sent";
         private const string URI_DRAFT = "content://sms/draft";
 
-        public class SMSMessage
-        {
-            public string Body { get; set; }
-            public string Address { get; set; }
-            public int ID { get; set; }
-        }
+        private const string PERSON = "person";
+        private const string ID = "_id";
+        private const string BODY = "body";
+        private const string ADDRESS = "address";
+        private const string DATE = "date";
 
         public List<SMSMessage> SMSItems = new List<SMSMessage>();
 
@@ -59,7 +53,7 @@ namespace VisionBuddy.Droid
                 Android.Net.Uri inboxURI = Android.Net.Uri.Parse(messageURI);
 
                 // list of required columns
-                string[] reqCols = new string[] { "_id", "address", "body" };
+                string[] reqCols = new string[] { ID, ADDRESS, BODY, PERSON, DATE };
 
                 ICursor icursor = Application.Context.ContentResolver.Query(
                     Android.Net.Uri.Parse(messageURI), reqCols, null, null, null);
@@ -69,9 +63,11 @@ namespace VisionBuddy.Droid
                     for (icursor.MoveToFirst(); !icursor.IsAfterLast; icursor.MoveToNext())
                     {
                         SMSMessage item = new SMSMessage();
-                        item.Body = icursor.GetString(icursor.GetColumnIndex("body"));
-                        item.Address = icursor.GetString(icursor.GetColumnIndex("address"));
-                        item.ID = icursor.GetInt(icursor.GetColumnIndex("_id"));
+                        item.Body = icursor.GetString(icursor.GetColumnIndex(BODY));
+                        item.Address = icursor.GetString(icursor.GetColumnIndex(ADDRESS));
+                        item.ID = icursor.GetInt(icursor.GetColumnIndex(ID));
+                        item.Person = icursor.GetString(icursor.GetColumnIndex(PERSON));
+                        item.Date = icursor.GetString(icursor.GetColumnIndex(DATE));
                         SMSItems.Add(item);
                     }
                 }
@@ -79,5 +75,28 @@ namespace VisionBuddy.Droid
             catch
             { }
         }
+
+        public bool SendSMS(string message, Contact person)
+        {
+            if ((message == null) || (person == null))
+                return false;
+
+            // smsto: + phone number
+            var smsUri = Android.Net.Uri.Parse("smsto:" + person.Address);
+            var smsIntent = new Intent(Intent.ActionSendto, smsUri);
+            // body message , value
+            smsIntent.PutExtra(message, person.Name);
+
+            return true;
+        }
+    }
+
+    public class SMSMessage
+    {
+        public string Body { get; set; }
+        public string Address { get; set; }
+        public int ID { get; set; }
+        public string Person { get; set; }
+        public string Date { get; set; }
     }
 }

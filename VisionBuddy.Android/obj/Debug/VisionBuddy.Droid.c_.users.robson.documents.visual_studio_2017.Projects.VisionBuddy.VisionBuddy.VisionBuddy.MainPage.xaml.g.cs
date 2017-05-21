@@ -11,7 +11,7 @@
 namespace VisionBuddy {
     
     
-    [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("C:\\Users\\Robson\\Documents\\Visual Studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\Vis" +
+    [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("C:\\Users\\Robson\\documents\\visual studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\Vis" +
         "ionBuddy\\MainPage.xaml")]
     public partial class MainPage : global::Xamarin.Forms.ContentPage {
         
@@ -20,9 +20,6 @@ namespace VisionBuddy {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private global::Xamarin.Forms.StackLayout stackLayout;
-        
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.Label lbWelcome;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private global::Xamarin.Forms.ListView lvDisplay;
@@ -41,7 +38,6 @@ namespace VisionBuddy {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(MainPage));
             stackLayoutMain = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "stackLayoutMain");
             stackLayout = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "stackLayout");
-            lbWelcome = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Label>(this, "lbWelcome");
             lvDisplay = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ListView>(this, "lvDisplay");
             stackLayoutBottom = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "stackLayoutBottom");
             btLoadSentSMS = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "btLoadSentSMS");

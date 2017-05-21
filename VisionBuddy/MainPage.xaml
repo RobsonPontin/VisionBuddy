@@ -6,23 +6,22 @@
 
     <StackLayout x:Name="stackLayoutMain" Orientation="Vertical">
 
-        <StackLayout x:Name="stackLayout" VerticalOptions="FillAndExpand" Orientation="Vertical">
+        <StackLayout x:Name="stackLayout" VerticalOptions="FillAndExpand" Orientation="Vertical" Spacing="1">
 
-            <Label x:Name="lbWelcome" Text="Welcome to Xamarin Forms! This is a Test!!!!" 
-           VerticalOptions="Center" 
-           HorizontalOptions="Center" />
-
-            <ListView x:Name="lvDisplay" />
+            <ListView x:Name="lvDisplay"/>
 
         </StackLayout>
 
         <StackLayout x:Name="stackLayoutBottom" HorizontalOptions="FillAndExpand" Orientation="Horizontal">
 
+            
+
             <Button x:Name="btLoadSentSMS" Text="Load Sent" HorizontalOptions="FillAndExpand"
                 local:AccessibilityEffect.AccessibilityLabel="Load Sent SMS"/>
             <Button x:Name="btLoadInboxSMS" Text="Load Inbox" HorizontalOptions="FillAndExpand"
                 local:AccessibilityEffect.AccessibilityLabel="Load Inbox SMS"/>
-
+            
+            
         </StackLayout>
     </StackLayout>
 </ContentPage>
