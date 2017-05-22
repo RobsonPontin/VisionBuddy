@@ -4,7 +4,7 @@ using Android.Database;
 using System.Collections.Generic;
 using static VisionBuddy.Droid.ContactManager;
 
-namespace VisionBuddy.Droid
+namespace VisionBuddy
 {
     class SMSManager
     {

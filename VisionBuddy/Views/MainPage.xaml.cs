@@ -1,5 +1,6 @@
 ﻿using System;
 using VisionBuddy.Droid;
+using VisionBuddy.Views;
 using Xamarin.Forms;
 
 namespace VisionBuddy
@@ -97,16 +98,45 @@ namespace VisionBuddy
             var item = lv.SelectedItem as SMSMessage;
             if (item == null)
                 return;
+
+            var page = new NavigationPage(new MessageDisplay());           
+        }
+
+        /// <summary>
+        /// Popup to display a message
+        /// </summary>
+        /// <param name="text"></param>
+        async void OnAlertRequested(string title, string body, string acceptMsg, string cancelMsg)
+        {
+            if (title == null)
+                title = "Popup Message";
+
+            if (body == null)
+                return;
+
+            if (acceptMsg == null)
+                acceptMsg = "Accept";
+
+            if (cancelMsg == null)
+                cancelMsg = "Cancel";
+
+            var msg = await DisplayAlert(title, body, acceptMsg, cancelMsg);
         }
 
         private void BtLoadInboxSMS_Clicked(object sender, EventArgs e)
         {
+            var editorPage = new MessageDisplay();
+
+            Navigation.PushAsync(editorPage);
+           
+            
+
             //SMSManager smsManager = new SMSManager();
             //smsManager.GetSMSMessages(SMSManager.SMSType.Inbox);
 
 
             //lvDisplay.ItemsSource = smsManager.SMSItems;
-            lvDisplay.ItemTemplate = GetDataTemplate(TemplateType.Settings);
+            //lvDisplay.ItemTemplate = GetDataTemplate(TemplateType.Settings);
         }
     }
 }
