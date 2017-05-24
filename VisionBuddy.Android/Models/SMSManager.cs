@@ -4,7 +4,7 @@ using Android.Database;
 using System.Collections.Generic;
 using static VisionBuddy.Droid.ContactManager;
 
-namespace VisionBuddy
+namespace VisionBuddy.Droid
 {
     class SMSManager
     {
@@ -61,11 +61,13 @@ namespace VisionBuddy
                     for (icursor.MoveToFirst(); !icursor.IsAfterLast; icursor.MoveToNext())
                     {
                         SMSMessage item = new SMSMessage();
-                        item.Body = icursor.GetString(icursor.GetColumnIndex(BODY));
-                        item.Address = icursor.GetString(icursor.GetColumnIndex(ADDRESS));
-                        item.ID = icursor.GetInt(icursor.GetColumnIndex(ID));
-                        item.Person = icursor.GetString(icursor.GetColumnIndex(PERSON));
-                        item.Date = icursor.GetString(icursor.GetColumnIndex(DATE));
+                        {
+                            item.Body = icursor.GetString(icursor.GetColumnIndex(BODY));
+                            item.Address = icursor.GetString(icursor.GetColumnIndex(ADDRESS));
+                            item.Person = ContactManager.GetContactByNumber(item.Address);
+                            item.ID = icursor.GetInt(icursor.GetColumnIndex(ID));
+                            item.Date = icursor.GetString(icursor.GetColumnIndex(DATE));
+                        }
                         SMSItems.Add(item);
                     }
                 }
@@ -74,16 +76,16 @@ namespace VisionBuddy
             { }
         }
 
-        public bool SendSMS(string message, Contact person)
+        public bool SendSMS(string message, string address)
         {
-            if ((message == null) || (person == null))
+            if ((message == null) && (address == null))
                 return false;
 
             // smsto: + phone number
-            var smsUri = Android.Net.Uri.Parse("smsto:" + person.Address);
+            var smsUri = Android.Net.Uri.Parse("smsto:" + address);
             var smsIntent = new Intent(Intent.ActionSendto, smsUri);
             // body message , value
-            smsIntent.PutExtra(message, person.Name);
+            smsIntent.PutExtra(message, address);
 
             return true;
         }

@@ -13,15 +13,10 @@
         </StackLayout>
 
         <StackLayout x:Name="stackLayoutBottom" HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+       
+            <Button x:Name="btLoadSentSMS" Text="Load Sent" HorizontalOptions="FillAndExpand"/>
+            <Button x:Name="btLoadInboxSMS" Text="Load Inbox" HorizontalOptions="FillAndExpand"/>            
 
-            
-
-            <Button x:Name="btLoadSentSMS" Text="Load Sent" HorizontalOptions="FillAndExpand"
-                local:AccessibilityEffect.AccessibilityLabel="Load Sent SMS"/>
-            <Button x:Name="btLoadInboxSMS" Text="Load Inbox" HorizontalOptions="FillAndExpand"
-                local:AccessibilityEffect.AccessibilityLabel="Load Inbox SMS"/>
-            
-            
         </StackLayout>
     </StackLayout>
 </ContentPage>

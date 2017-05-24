@@ -6,22 +6,30 @@ namespace VisionBuddy
 	//[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MessageDisplay : ContentPage
 	{
-		public MessageDisplay ()
+        public MessageDisplay()
+        {
+            InitializeComponent();
+        }
+
+		public MessageDisplay (string body)
 		{
-			InitializeComponent ();
+			InitializeComponent();
+
+            lbMessage.Text = body;
 		}
 
-        private void editorMsgField_Completed(object sender, EventArgs e)
+        private void BtnRepply_Clicked(object sender, EventArgs e)
         {
-            Editor editor = sender as Editor;
-            if (editor == null)
-                return;
+            btnRepply.IsEnabled = false;
+            Editor editorReply = new Editor();
+            Button btnSendMsg = new Button()
+            {
+                Text = "Send Message"
+            };
 
-            /* Get text inserted in the Editor obj
-            * open a popup for confirmation to send
-            * or not
-            */
-            // editor.Text;
-        }        
+            stackLayoutEditor.Children.Add(editorReply);
+            stackLayoutEditor.Children.Add(btnSendMsg);
+            editorReply.Focus();
+        }
     }
 }

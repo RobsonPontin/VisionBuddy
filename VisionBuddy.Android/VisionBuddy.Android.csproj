@@ -95,11 +95,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContactManager.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Models\ContactManager.cs" />
+    <Compile Include="Models\SMSManager.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SMSManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

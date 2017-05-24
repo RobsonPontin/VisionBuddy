@@ -1,19 +1,21 @@
 ﻿using System;
 using VisionBuddy.Droid;
-using VisionBuddy.Views;
+using VisionBuddy.Tools;
 using Xamarin.Forms;
 
 namespace VisionBuddy
 {
     public partial class MainPage : ContentPage
     {
+        const int LAYOUT_SPACING = 10;
+
         public MainPage()
         {
             InitializeComponent();
 
             btLoadSentSMS.Clicked += BtLoadSMS_Clicked;
             btLoadInboxSMS.Clicked += BtLoadInboxSMS_Clicked;
-            stackLayout.Spacing = 10;
+            stackLayout.Spacing = LAYOUT_SPACING;
         }
 
         public enum TemplateType
@@ -85,8 +87,8 @@ namespace VisionBuddy
             smsManager.GetSMSMessages(SMSManager.SMSType.Sent);
 
             lvDisplay.ItemsSource = smsManager.SMSItems;
-            lvDisplay.ItemSelected += LvDisplay_ItemSelected;
             lvDisplay.ItemTemplate = GetDataTemplate(TemplateType.ListView);
+            lvDisplay.ItemSelected += LvDisplay_ItemSelected;
         }
 
         private void LvDisplay_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -95,11 +97,12 @@ namespace VisionBuddy
             if (lv == null)
                 return;
 
-            var item = lv.SelectedItem as SMSMessage;
-            if (item == null)
+            var msgItem = lv.SelectedItem as SMSMessage;
+            if (msgItem == null)
                 return;
 
-            var page = new NavigationPage(new MessageDisplay());           
+            var page = new NavigationPage(new MessageDisplay(msgItem.Body));
+            Navigation.PushAsync(page);
         }
 
         /// <summary>
@@ -125,18 +128,7 @@ namespace VisionBuddy
 
         private void BtLoadInboxSMS_Clicked(object sender, EventArgs e)
         {
-            var editorPage = new MessageDisplay();
-
-            Navigation.PushAsync(editorPage);
-           
-            
-
-            //SMSManager smsManager = new SMSManager();
-            //smsManager.GetSMSMessages(SMSManager.SMSType.Inbox);
-
-
-            //lvDisplay.ItemsSource = smsManager.SMSItems;
-            //lvDisplay.ItemTemplate = GetDataTemplate(TemplateType.Settings);
+            ContactManager.GetContactByNumber("6842356987");
         }
     }
 }

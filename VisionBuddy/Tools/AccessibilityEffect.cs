@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Xamarin.Forms;
 
-namespace VisionBuddy
+namespace VisionBuddy.Tools
 {
     class AccessibilityEffect
     {

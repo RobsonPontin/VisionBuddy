@@ -3,11 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VisionBuddy.MessageDisplay">
 
+    <StackLayout x:Name="stackLayoutEditor" Padding="10">
 
-    <StackLayout>
+        <Label x:Name="lbMessage" Text="Test Message"/>
 
-        <Editor x:Name="editorMsgField" Completed="editorMsgField_Completed"/>
+        <Button x:Name="btnRepply" Text="Repply" Clicked="btnRepply_Clicked"/>
 
     </StackLayout>
-    
+
 </ContentPage>
