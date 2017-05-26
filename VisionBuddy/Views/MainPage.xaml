@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:VisionBuddy"
-             x:Class="VisionBuddy.MainPage">
+             x:Class="VisionBuddy.MainPage"
+             Title="Vision Buddy">
 
     <StackLayout x:Name="stackLayoutMain" Orientation="Vertical">
 

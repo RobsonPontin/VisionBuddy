@@ -7,7 +7,7 @@
 
         <Label x:Name="lbMessage" Text="Test Message"/>
 
-        <Button x:Name="btnRepply" Text="Repply" Clicked="btnRepply_Clicked"/>
+        <Button x:Name="btnRepply" Text="Repply" Clicked="BtnRepply_Clicked"/>
 
     </StackLayout>
 

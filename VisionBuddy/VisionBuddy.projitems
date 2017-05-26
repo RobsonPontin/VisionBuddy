@@ -13,6 +13,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Tools\AccessibilityEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tools\SwitchBlade.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\EditorMessageView.xaml.cs">
       <DependentUpon>EditorMessageView.xaml</DependentUpon>
       <SubType>Code</SubType>

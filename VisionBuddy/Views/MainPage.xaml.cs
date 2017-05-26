@@ -101,29 +101,9 @@ namespace VisionBuddy
             if (msgItem == null)
                 return;
 
-            var page = new NavigationPage(new MessageDisplay(msgItem.Body));
+            var page = new NavigationPage(new MessageDisplay(msgItem.Body, 
+                (msgItem.Person ?? msgItem.Person)));
             Navigation.PushAsync(page);
-        }
-
-        /// <summary>
-        /// Popup to display a message
-        /// </summary>
-        /// <param name="text"></param>
-        async void OnAlertRequested(string title, string body, string acceptMsg, string cancelMsg)
-        {
-            if (title == null)
-                title = "Popup Message";
-
-            if (body == null)
-                return;
-
-            if (acceptMsg == null)
-                acceptMsg = "Accept";
-
-            if (cancelMsg == null)
-                cancelMsg = "Cancel";
-
-            var msg = await DisplayAlert(title, body, acceptMsg, cancelMsg);
         }
 
         private void BtLoadInboxSMS_Clicked(object sender, EventArgs e)
