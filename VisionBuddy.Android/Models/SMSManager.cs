@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Database;
+using Android.Telephony;
 using System.Collections.Generic;
 using static VisionBuddy.Droid.ContactManager;
 
@@ -60,12 +61,15 @@ namespace VisionBuddy.Droid
                 {
                     for (icursor.MoveToFirst(); !icursor.IsAfterLast; icursor.MoveToNext())
                     {
-                        SMSMessage item = new SMSMessage();
+                        var item = new SMSMessage();
                         {
                             item.Body = icursor.GetString(icursor.GetColumnIndex(BODY));
-                            item.Address = icursor.GetString(icursor.GetColumnIndex(ADDRESS));
-                            item.Person = ContactManager.GetContactByNumber(item.Address);
-                            item.ID = icursor.GetInt(icursor.GetColumnIndex(ID));
+                            item.Contact.PhoneNumber = icursor.GetString(icursor.GetColumnIndex(ADDRESS));
+                            // Find contact by number, if found get Name attribute
+                            if (ContactManager.GetContactByNumber(item.Contact.PhoneNumber) != null)
+                                item.Contact.Name = ContactManager.GetContactByNumber(item.Contact.PhoneNumber).Name;
+
+                            item.SMSID = icursor.GetInt(icursor.GetColumnIndex(ID));
                             item.Date = icursor.GetString(icursor.GetColumnIndex(DATE));
                         }
                         SMSItems.Add(item);
@@ -76,16 +80,19 @@ namespace VisionBuddy.Droid
             { }
         }
 
-        public bool SendSMS(string message, string address)
+        /// <summary>
+        /// Send a SMS Message to a contact
+        /// </summary>
+        /// <param name="message">Text message to be sent</param>
+        /// <param name="contact">Contact with a valid phone number</param>
+        /// <returns></returns>
+        public static bool SendSMS(string message, Contact contact)
         {
-            if ((message == null) && (address == null))
+            if ((message == null) || (contact.PhoneNumber == null))
                 return false;
 
-            // smsto: + phone number
-            var smsUri = Android.Net.Uri.Parse("smsto:" + address);
-            var smsIntent = new Intent(Intent.ActionSendto, smsUri);
-            // body message , value
-            smsIntent.PutExtra(message, address);
+            SmsManager.Default.SendTextMessage(contact.PhoneNumber, null, message,
+                null, null);
 
             return true;
         }
@@ -93,10 +100,13 @@ namespace VisionBuddy.Droid
 
     public class SMSMessage
     {
+        public SMSMessage()
+        {
+            Contact = new Contact();
+        }
+        public int SMSID { get; set; }
         public string Body { get; set; }
-        public string Address { get; set; }
-        public int ID { get; set; }
-        public string Person { get; set; }
         public string Date { get; set; }
+        public Contact Contact { get; set; }
     }
 }

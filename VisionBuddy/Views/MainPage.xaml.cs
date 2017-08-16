@@ -88,10 +88,10 @@ namespace VisionBuddy
 
             lvDisplay.ItemsSource = smsManager.SMSItems;
             lvDisplay.ItemTemplate = GetDataTemplate(TemplateType.ListView);
-            lvDisplay.ItemSelected += LvDisplay_ItemSelected;
+            lvDisplay.ItemTapped += LvDisplay_ItemTapped; ;//LvDisplay_ItemSelected;
         }
 
-        private void LvDisplay_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private void LvDisplay_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             var lv = sender as ListView;
             if (lv == null)
@@ -101,8 +101,8 @@ namespace VisionBuddy
             if (msgItem == null)
                 return;
 
-            var page = new NavigationPage(new MessageDisplay(msgItem.Body, 
-                (msgItem.Person ?? msgItem.Person)));
+            var page = new NavigationPage(new MessageDisplay(msgItem));
+            page.Title = (msgItem.Contact.Name ?? msgItem.Contact.PhoneNumber);
             Navigation.PushAsync(page);
         }
 
