@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using VisionBuddy.Droid;
 using VisionBuddy.Tools;
 using Xamarin.Forms;
@@ -9,86 +10,123 @@ namespace VisionBuddy
     {
         const int LAYOUT_SPACING = 10;
 
+        SMSManager SMSManager = new SMSManager();
+
         public MainPage()
         {
             InitializeComponent();
 
-            btLoadSentSMS.Clicked += BtLoadSMS_Clicked;
-            btLoadInboxSMS.Clicked += BtLoadInboxSMS_Clicked;
-            stackLayout.Spacing = LAYOUT_SPACING;
+            NavigationPage.SetHasNavigationBar(this, false);
+            Content = GenerateMainView();
         }
 
-        public enum TemplateType
+        private View GenerateMainView()
         {
-            ListView,
-            Settings
-        }
-
-        /// <summary>
-        /// It will build and return a DataTemplate formated for a
-        /// specific view type
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        private DataTemplate GetDataTemplate(TemplateType type)
-        {
-            switch (type)
+            var StackLayoutForButtons = new StackLayout()
             {
-                case TemplateType.ListView:
-                    {
-                        var smsDataTemplate = new DataTemplate(() =>
-                        {
-                            var stackLayout = new StackLayout();
+                Orientation = StackOrientation.Vertical,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+            };
 
-                            var bodyLabel = new Label { FontAttributes = FontAttributes.Bold };
-                            var addressLabel = new Label();
-                            var dateLabel = new Label();
-                            // set binding
-                            bodyLabel.SetBinding(Label.TextProperty, "Body");
-                            addressLabel.SetBinding(Label.TextProperty, "Address");
-                            dateLabel.SetBinding(Label.TextProperty, "Date");
+            var btnInbox = new Button()
+            {
+                Text = "Inbox",
+                HorizontalOptions = LayoutOptions.FillAndExpand
+            };
+            btnInbox.Clicked += BtnInbox_Clicked;
 
-                            // set accessibility
-                            AccessibilityEffect.SetAccessibilityLabel(bodyLabel, "Body Message");
-                            AccessibilityEffect.SetAccessibilityLabel(addressLabel, "Telephone Number");
+            var btnSent = new Button()
+            {
+                Text = "Sent",
+                HorizontalOptions = LayoutOptions.FillAndExpand
+            };
+            btnSent.Clicked += BtnSent_Clicked;
 
-                            stackLayout.Children.Add(addressLabel);
-                            stackLayout.Children.Add(bodyLabel);
-                            stackLayout.Children.Add(dateLabel);
+            var btnCompose = new Button()
+            {
+                Text = "Compose",
+                HorizontalOptions = LayoutOptions.FillAndExpand
+            };
 
-                            return new ViewCell { View = stackLayout };
-                        });
-                        return smsDataTemplate;
-                    }
-                case TemplateType.Settings:
-                    {
-                        var smsDataTemplate = new DataTemplate(() =>
-                        {
-                            var stackLayout = new StackLayout();
+            StackLayoutForButtons.Children.Add(btnInbox);
+            StackLayoutForButtons.Children.Add(btnSent);
+            StackLayoutForButtons.Children.Add(btnCompose);
 
-                            var showDateLabel = new Label { FontAttributes = FontAttributes.Bold, Text = "Show Date?" };
-                            var switchTest = new Switch();
+            var StackLayoutForListView = new StackLayout()
+            {
+                Orientation = StackOrientation.Vertical,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
 
-                            stackLayout.Children.Add(showDateLabel);
-                            stackLayout.Children.Add(switchTest);
+            var lv = new ListView()
+            {
+                ItemsSource = SMSManager.SMSMessages,
+                ItemTemplate = GetSMSMsgDataTamplate()
+            };
+            lv.ItemTapped += LvDisplay_ItemTapped;
 
-                            return new ViewCell { View = stackLayout };
-                        });
-                        return smsDataTemplate;
-                    }
-            }
-            return null;
+            StackLayoutForListView.Children.Add(lv);
+
+            var mainStackLayout = new StackLayout()
+            {
+                Orientation = StackOrientation.Vertical,
+                Spacing = LAYOUT_SPACING
+            };
+            mainStackLayout.Children.Add(StackLayoutForButtons);
+            mainStackLayout.Children.Add(StackLayoutForListView);
+
+            return mainStackLayout;
         }
 
-        private void BtLoadSMS_Clicked(object sender, EventArgs e)
+        private void BtnSent_Clicked(object sender, EventArgs e)
         {
-            SMSManager smsManager = new SMSManager();
+            SMSManager.LoadSMSMessages(SMSManager.SMSType.Sent);
+        }
 
-            smsManager.GetSMSMessages(SMSManager.SMSType.Sent);
+        private void BtnInbox_Clicked(object sender, EventArgs e)
+        {
+            SMSManager.LoadSMSMessages(SMSManager.SMSType.Inbox);
+        }
 
-            lvDisplay.ItemsSource = smsManager.SMSItems;
-            lvDisplay.ItemTemplate = GetDataTemplate(TemplateType.ListView);
-            lvDisplay.ItemTapped += LvDisplay_ItemTapped; ;//LvDisplay_ItemSelected;
+        private DataTemplate GetSMSMsgDataTamplate()
+        {
+            var smsDataTemplate = new DataTemplate(() =>
+            {
+                var stackLayout = new StackLayout();
+
+                var lbBody = new Label { FontAttributes = FontAttributes.Bold };
+                var lbName = new Label();
+                var lbDate = new Label();
+
+                lbBody.SetBinding(Label.TextProperty, "Body");
+                lbName.SetBinding(Label.TextProperty, "Name");
+                lbDate.SetBinding(Label.TextProperty, "Date");
+
+                stackLayout.Children.Add(lbName);
+                stackLayout.Children.Add(lbBody);
+                stackLayout.Children.Add(lbDate);
+
+                return new ViewCell { View = stackLayout };
+            });
+            return smsDataTemplate;
+        }
+
+        private DataTemplate GetSettingsDataTemplate()
+        {
+            var smsDataTemplate = new DataTemplate(() =>
+            {
+                var stackLayout = new StackLayout();
+
+                var showDateLabel = new Label { FontAttributes = FontAttributes.Bold, Text = "Show Date?" };
+                var switchTest = new Switch();
+
+                stackLayout.Children.Add(showDateLabel);
+                stackLayout.Children.Add(switchTest);
+
+                return new ViewCell { View = stackLayout };
+            });
+            return smsDataTemplate;
         }
 
         private void LvDisplay_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -102,13 +140,9 @@ namespace VisionBuddy
                 return;
 
             var page = new NavigationPage(new MessageDisplay(msgItem));
-            page.Title = (msgItem.Contact.Name ?? msgItem.Contact.PhoneNumber);
-            Navigation.PushAsync(page);
-        }
-
-        private void BtLoadInboxSMS_Clicked(object sender, EventArgs e)
-        {
-            ContactManager.GetContactByNumber("6842356987");
+            page.Title = (msgItem.contact.Name ?? msgItem.contact.PhoneNumber);
+            
+            Navigation.PushModalAsync(page);            
         }
     }
 }

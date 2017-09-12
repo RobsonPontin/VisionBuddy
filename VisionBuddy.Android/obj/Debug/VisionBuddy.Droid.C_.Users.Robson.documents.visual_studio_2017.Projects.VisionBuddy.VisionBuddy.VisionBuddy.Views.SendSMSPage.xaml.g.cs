@@ -8,16 +8,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace VisionBuddy {
+namespace VisionBuddy.Views {
     
     
     [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("C:\\Users\\Robson\\documents\\visual studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\Vis" +
-        "ionBuddy\\Views\\MessageDisplay.xaml")]
-    public partial class MessageDisplay : global::Xamarin.Forms.ContentPage {
+        "ionBuddy\\Views\\SendSMSPage.xaml")]
+    public partial class SendSMSPage : global::Xamarin.Forms.ContentPage {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private void InitializeComponent() {
-            global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(MessageDisplay));
+            global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(SendSMSPage));
         }
     }
 }

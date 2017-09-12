@@ -11,16 +11,14 @@ namespace VisionBuddy
     {
         public App()
         {
-            InitializeComponent();
-
-            // Set MainPage XAML as a root page of the Navigation Architecture
-            var navigationPage = new NavigationPage(new MainPage());
-            MainPage = navigationPage;
+            InitializeComponent();           
         }
 
         protected override void OnStart()
         {
-            // Handle when your app starts                  
+            // Set MainPage XAML as a root page of the Navigation Architecture
+            var mainPage = new NavigationPage(new MainPage());                       
+            MainPage = mainPage;
         }
 
         protected override void OnSleep()

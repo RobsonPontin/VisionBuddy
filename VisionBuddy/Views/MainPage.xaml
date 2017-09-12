@@ -2,22 +2,6 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:VisionBuddy"
-             x:Class="VisionBuddy.MainPage"
-             Title="Vision Buddy">
+             x:Class="VisionBuddy.MainPage">   
 
-    <StackLayout x:Name="stackLayoutMain" Orientation="Vertical">
-
-        <StackLayout x:Name="stackLayout" VerticalOptions="FillAndExpand" Orientation="Vertical" Spacing="1">
-
-            <ListView x:Name="lvDisplay"/>
-
-        </StackLayout>
-
-        <StackLayout x:Name="stackLayoutBottom" HorizontalOptions="FillAndExpand" Orientation="Horizontal">
-       
-            <Button x:Name="btLoadSentSMS" Text="Load Sent" HorizontalOptions="FillAndExpand"/>
-            <Button x:Name="btLoadInboxSMS" Text="Load Inbox" HorizontalOptions="FillAndExpand"/>            
-
-        </StackLayout>
-    </StackLayout>
 </ContentPage>

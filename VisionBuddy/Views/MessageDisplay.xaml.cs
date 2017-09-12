@@ -3,13 +3,20 @@ using Android.Views.InputMethods;
 using System;
 using VisionBuddy.Droid;
 using VisionBuddy.Tools;
+using VisionBuddy.Views;
 using Xamarin.Forms;
+
+// TODO: Create a top bar with Title and Back Button
 
 namespace VisionBuddy
 {
     //[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MessageDisplay : ContentPage
     {
+        const int MESSAGE_TEXT_BOX_HEIGHT = 200;
+        const int STACKLAYOUT_MARGIN = 5;
+
+        SMSMessage _message = new SMSMessage();
         Editor editorReply = new Editor();
         Button btnClearMsg = new Button();
         Button btnSendMsg = new Button()
@@ -17,18 +24,6 @@ namespace VisionBuddy
             Text = "Send Message"
         };        
 
-        SMSMessage _message = new SMSMessage();
-
-        public MessageDisplay()
-        {
-            InitializeComponent();
-        }
-
-        /// <summary>
-        /// Contructor
-        /// </summary>
-        /// <param name="body">The message</param>
-        /// <param name="title">The Contact's name or number</param>
 		public MessageDisplay(SMSMessage message)
         {
             InitializeComponent();
@@ -36,58 +31,121 @@ namespace VisionBuddy
             // Set this form as navigation bar
             // removing the Title bar
             NavigationPage.SetHasNavigationBar(this, false);
+            _message = message;
+            Content = GenerateMainView();
 
-            editorReply.Completed += EditorReply_Completed;
+            //editorReply.Completed += EditorReply_Completed;
 
             editorReply.HeightRequest = 200;
-            _message = message;
-            lbMessage.Text = message.Body;
+            
+           // lbMessage.Text = message.Body;
         }
 
-        private void EditorReply_Completed(object sender, EventArgs e)
+        private View GenerateMainView()
         {
-            btnSendMsg.Focus();            
+            // Top StackLayout with label (name or phone number) + button (return)
+            // Middle StackLayout Body Message + Button (Write Message)
+
+            var stackLayoutMain = new StackLayout()
+            {
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+
+            var stackLayoutTop = new StackLayout()
+            {
+                Orientation = StackOrientation.Horizontal,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Margin = STACKLAYOUT_MARGIN,                
+            };
+
+            var btnReturnPage = new Button()
+            {
+                Text = "Return"
+            };
+            btnReturnPage.Clicked += BtnReturnPage_Clicked;
+
+            var lbTitle = new Label()
+            {
+                Text = _message.Name,
+                HorizontalTextAlignment = TextAlignment.Center
+            };
+
+            stackLayoutTop.Children.Add(btnReturnPage);
+            stackLayoutTop.Children.Add(lbTitle);
+
+            var stackLayoutMiddle = new StackLayout()
+            {
+                Orientation = StackOrientation.Vertical
+            };
+
+            var lbSMSBody = new Label()
+            {
+                Text = _message.Body,
+                HeightRequest = MESSAGE_TEXT_BOX_HEIGHT,
+            };
+
+            var btnRepply = new Button()
+            {
+                Text = "Repply"
+            };
+            btnRepply.Clicked += BtnRepply_Clicked;
+
+            stackLayoutMiddle.Children.Add(lbSMSBody);
+            stackLayoutMiddle.Children.Add(btnRepply);
+
+            stackLayoutMain.Children.Add(stackLayoutTop);
+            stackLayoutMain.Children.Add(stackLayoutMiddle);
+
+            return stackLayoutMain;
+        }
+
+        private void BtnReturnPage_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PopModalAsync();
         }
 
         private void BtnRepply_Clicked(object sender, EventArgs e)
         {
-            btnRepply.IsEnabled = false;
+            var buttonSender = sender as Button;
+            if (buttonSender == null)
+                return;
 
-            btnSendMsg.Clicked += BtnSendMsg_Clicked;
+            buttonSender.IsVisible = false;
 
-            stackLayoutEditor.Children.Add(editorReply);
-            stackLayoutEditor.Children.Add(btnSendMsg);
-            editorReply.Focus();
+            Navigation.PushModalAsync(new SendSMSPage(_message));
+
+            //btnSendMsg.Clicked += btnSendMsg_Clicked;
+            //stackLayoutEditor.Children.Add(editorReply);
+            //stackLayoutEditor.Children.Add(btnSendMsg);
+            //editorReply.Focus();
         }
-
-        /// <summary>
-        /// Event generated to send a SMS message
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnSendMsg_Clicked(object sender, EventArgs e)
-        {
-            if (editorReply.Text == null)
-                SwitchBlade.OnAlertRequested(this, "", "");
-
-            SMSManager.SendSMS(editorReply.Text, _message.Contact);
-        }
-
-        // Trying to display keyboard more usuable 
-
+        
+        /*
+        // Trying to display usable keyboard 
         public static void ShowKeyboard(Android.Views.View pView)
         {
             pView.RequestFocus();
 
-            InputMethodManager inputMethodManager = Application.Current.GetSystemService(Context.InputMethodService) as InputMethodManager;
+            var inputMethodManager = Application.Current.GetSystemService(Context.InputMethodService) as InputMethodManager;
             inputMethodManager.ShowSoftInput(pView, ShowFlags.Forced);
             inputMethodManager.ToggleSoftInput(ShowFlags.Forced, HideSoftInputFlags.ImplicitOnly);
         }
 
         public static void HideKeyboard(Android.Views.View pView)
         {
-            InputMethodManager inputMethodManager = Application.Current.GetSystemService(Context.InputMethodService) as InputMethodManager;
+            var inputMethodManager = Application.Current.GetSystemService(Context.InputMethodService) as InputMethodManager;
             inputMethodManager.HideSoftInputFromWindow(pView.WindowToken, HideSoftInputFlags.None);
-        }
+        }*/
     }
 }
+
+/*
+    <StackLayout x:Name="stackLayoutEditor" Padding="10">
+
+        <Label x:Name="lbMessage" Text="Test Message"/>
+
+        <Button x:Name="btnRepply" Text="Repply" Clicked="BtnRepply_Clicked"/>
+
+    </StackLayout>
+ */

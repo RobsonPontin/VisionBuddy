@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace VisionBuddy.Tools
 {
-    public class SwitchBlade
+    public class PopUpDisplay
     {
         /// <summary>
         /// Popup to display a message

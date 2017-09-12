@@ -3,6 +3,7 @@ using Android.Content;
 using Android.Database;
 using Android.Telephony;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using static VisionBuddy.Droid.ContactManager;
 
 namespace VisionBuddy.Droid
@@ -19,7 +20,7 @@ namespace VisionBuddy.Droid
         private const string ADDRESS = "address";
         private const string DATE = "date";
 
-        public List<SMSMessage> SMSItems = new List<SMSMessage>();
+        public ObservableCollection<SMSMessage> SMSMessages = new ObservableCollection<SMSMessage>();
 
         public enum SMSType
         {
@@ -28,9 +29,10 @@ namespace VisionBuddy.Droid
             Draft
         }
 
-        public void GetSMSMessages(SMSType type)
+        public void LoadSMSMessages(SMSType type)
         {
-            SMSItems.Clear();
+            if (SMSMessages.Count > 0)
+                SMSMessages.Clear();
 
             try
             {
@@ -52,40 +54,37 @@ namespace VisionBuddy.Droid
                 Android.Net.Uri inboxURI = Android.Net.Uri.Parse(messageURI);
 
                 // list of required columns
-                string[] reqCols = new string[] { ID, ADDRESS, BODY, PERSON, DATE };
+                string[] requeridColumns = new string[] { ID, ADDRESS, BODY, PERSON, DATE };
 
                 ICursor icursor = Application.Context.ContentResolver.Query(
-                    Android.Net.Uri.Parse(messageURI), reqCols, null, null, null);
+                    Android.Net.Uri.Parse(messageURI), requeridColumns, null, null, null);
 
-                if (icursor != null && icursor.Count > 0)
+                if (icursor == null || icursor.Count == 0)
+                    return;
+
+                for (icursor.MoveToFirst(); !icursor.IsAfterLast; icursor.MoveToNext())
                 {
-                    for (icursor.MoveToFirst(); !icursor.IsAfterLast; icursor.MoveToNext())
+                    var item = new SMSMessage();
                     {
-                        var item = new SMSMessage();
-                        {
-                            item.Body = icursor.GetString(icursor.GetColumnIndex(BODY));
-                            item.Contact.PhoneNumber = icursor.GetString(icursor.GetColumnIndex(ADDRESS));
-                            // Find contact by number, if found get Name attribute
-                            if (ContactManager.GetContactByNumber(item.Contact.PhoneNumber) != null)
-                                item.Contact.Name = ContactManager.GetContactByNumber(item.Contact.PhoneNumber).Name;
+                        item.Body = icursor.GetString(icursor.GetColumnIndex(BODY));
+                        if (item.Body == string.Empty)
+                            item.Body = "Empty Message";
 
-                            item.SMSID = icursor.GetInt(icursor.GetColumnIndex(ID));
-                            item.Date = icursor.GetString(icursor.GetColumnIndex(DATE));
-                        }
-                        SMSItems.Add(item);
+                        item.contact.PhoneNumber = icursor.GetString(icursor.GetColumnIndex(ADDRESS));
+
+                        if (ContactManager.GetContactByNumber(item.contact.PhoneNumber) != null)
+                            item.contact.Name = ContactManager.GetContactByNumber(item.contact.PhoneNumber).Name;
+
+                        item.SMSID = icursor.GetInt(icursor.GetColumnIndex(ID));
+                        item.Date = icursor.GetString(icursor.GetColumnIndex(DATE));
                     }
+                    SMSMessages.Add(item);
                 }
             }
             catch
             { }
         }
 
-        /// <summary>
-        /// Send a SMS Message to a contact
-        /// </summary>
-        /// <param name="message">Text message to be sent</param>
-        /// <param name="contact">Contact with a valid phone number</param>
-        /// <returns></returns>
         public static bool SendSMS(string message, Contact contact)
         {
             if ((message == null) || (contact.PhoneNumber == null))
@@ -102,11 +101,17 @@ namespace VisionBuddy.Droid
     {
         public SMSMessage()
         {
-            Contact = new Contact();
+            contact = new Contact();
         }
         public int SMSID { get; set; }
+        public string Name
+        {
+            get { return contact.GetNameOrtherwiseNumber(); }
+        }
+
         public string Body { get; set; }
         public string Date { get; set; }
-        public Contact Contact { get; set; }
+
+        public Contact contact { get; set; }
     }
 }
