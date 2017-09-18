@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using VisionBuddy.Droid;
 using VisionBuddy.Tools;
+using VisionBuddy.Views;
 using Xamarin.Forms;
 
 namespace VisionBuddy
@@ -9,6 +10,9 @@ namespace VisionBuddy
     public partial class MainPage : ContentPage
     {
         const int LAYOUT_SPACING = 10;
+        // The search bar must be specify due a bug for android 7.0
+        // https://forums.xamarin.com/discussion/79446/is-there-support-for-searchbar-on-nougat-7-0
+        const int SEARCHBAR_EXPLICITY_HEIGHT = 100;
 
         SMSManager SMSManager = new SMSManager();
 
@@ -31,26 +35,39 @@ namespace VisionBuddy
             var btnInbox = new Button()
             {
                 Text = "Inbox",
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                HorizontalOptions = LayoutOptions.FillAndExpand                
             };
             btnInbox.Clicked += BtnInbox_Clicked;
+            btnInbox.Clicked += BtnFeedback_Clicked;
 
             var btnSent = new Button()
             {
                 Text = "Sent",
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                HorizontalOptions = LayoutOptions.FillAndExpand,
             };
             btnSent.Clicked += BtnSent_Clicked;
+            btnSent.Clicked += BtnFeedback_Clicked;
 
             var btnCompose = new Button()
             {
                 Text = "Compose",
                 HorizontalOptions = LayoutOptions.FillAndExpand
             };
-
+            btnCompose.Clicked += BtnFeedback_Clicked;
+            btnCompose.Clicked += BtnCompose_Clicked;
+            
+            var searchBar = new SearchBar()
+            {
+                Placeholder = "Search Bar, enter the contact name",
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HeightRequest = SEARCHBAR_EXPLICITY_HEIGHT
+            };
+            searchBar.SearchButtonPressed += SearchBar_SearchButtonPressed;
+            
             StackLayoutForButtons.Children.Add(btnInbox);
             StackLayoutForButtons.Children.Add(btnSent);
             StackLayoutForButtons.Children.Add(btnCompose);
+            StackLayoutForButtons.Children.Add(searchBar);
 
             var StackLayoutForListView = new StackLayout()
             {
@@ -77,6 +94,37 @@ namespace VisionBuddy
             mainStackLayout.Children.Add(StackLayoutForListView);
 
             return mainStackLayout;
+        }
+
+       async private void BtnCompose_Clicked(object sender, EventArgs e)
+        {
+            // open send message display
+            var page = new NavigationPage(new SendSMSPage(null));
+
+            await Navigation.PushModalAsync(page);
+        }
+
+        private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
+        {
+            var searchBar = sender as SearchBar;
+            if (searchBar == null)
+                return;
+
+            if (string.IsNullOrWhiteSpace(searchBar.Text))
+                return;
+
+            SMSManager.SortSMSMessagesBy(searchBar.Text);
+        }
+
+        // After clicking the system should give a feedback saying which
+        // button was clicked
+        private void BtnFeedback_Clicked(object sender, EventArgs e)
+        {
+            var btnClicked = sender as Button;
+            if (btnClicked == null)
+                return;
+
+            // "Button" + btnClicked.Text + "selected"
         }
 
         private void BtnSent_Clicked(object sender, EventArgs e)
@@ -128,8 +176,8 @@ namespace VisionBuddy
             });
             return smsDataTemplate;
         }
-
-        private void LvDisplay_ItemTapped(object sender, ItemTappedEventArgs e)
+        // TODO: async and await????
+        async private void LvDisplay_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             var lv = sender as ListView;
             if (lv == null)
@@ -142,7 +190,7 @@ namespace VisionBuddy
             var page = new NavigationPage(new MessageDisplay(msgItem));
             page.Title = (msgItem.contact.Name ?? msgItem.contact.PhoneNumber);
             
-            Navigation.PushModalAsync(page);            
+            await Navigation.PushModalAsync(page);            
         }
     }
 }

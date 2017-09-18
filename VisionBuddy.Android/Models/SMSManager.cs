@@ -21,6 +21,7 @@ namespace VisionBuddy.Droid
         private const string DATE = "date";
 
         public ObservableCollection<SMSMessage> SMSMessages = new ObservableCollection<SMSMessage>();
+        public List<Contact> Contacts = new List<Contact>();
 
         public enum SMSType
         {
@@ -56,7 +57,7 @@ namespace VisionBuddy.Droid
                 // list of required columns
                 string[] requeridColumns = new string[] { ID, ADDRESS, BODY, PERSON, DATE };
 
-                ICursor icursor = Application.Context.ContentResolver.Query(
+                var icursor = Application.Context.ContentResolver.Query(
                     Android.Net.Uri.Parse(messageURI), requeridColumns, null, null, null);
 
                 if (icursor == null || icursor.Count == 0)
@@ -84,6 +85,29 @@ namespace VisionBuddy.Droid
             catch
             { }
         }
+                      
+        public bool SortSMSMessagesBy(string contactName)
+        {
+            if (SMSMessages == null)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(contactName))
+                return false;
+
+            List<SMSMessage> list = new List<SMSMessage>(SMSMessages);
+
+            foreach (SMSMessage sms in list)
+            {
+                if (string.IsNullOrWhiteSpace(sms.Name))
+                    continue;
+                
+                if (sms.Name.ToLower().Contains(contactName.ToLower()) == false)
+                {
+                    SMSMessages.Remove(sms);
+                }
+            }
+            return true;
+        }
 
         public static bool SendSMS(string message, Contact contact)
         {
@@ -96,7 +120,7 @@ namespace VisionBuddy.Droid
             return true;
         }
     }
-
+    
     public class SMSMessage
     {
         public SMSMessage()

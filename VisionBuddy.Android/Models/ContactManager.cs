@@ -2,6 +2,8 @@
 using Android.Content;
 using Android.Database;
 using Android.Net;
+using Android.Provider;
+using System.Collections.Generic;
 using System.Linq;
 using static Android.Provider.ContactsContract;
 
@@ -9,11 +11,87 @@ namespace VisionBuddy.Droid
 {
     public class ContactManager
     {
+        Uri CONTATCS_URI = ContactsContract.Contacts.ContentUri;
+        string[] projection = {
+            ContactsContract.Contacts.InterfaceConsts.Id,
+            ContactsContract.Contacts.InterfaceConsts.DisplayName
+        };
+
+        Uri CONTACT_PHONE_URI = ContactsContract.CommonDataKinds.Phone.ContentUri;
+        string[] projectionPhone = {
+            ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Id,
+            ContactsContract.CommonDataKinds.Phone.Number
+        };
+
+        List<Contact> _contacts = new List<Contact>();
+
         public enum ContactInfo
         {
             ID,
             Name,
             PhoneNumber
+        }
+
+        public bool LoadContacts()
+        {
+            if (GetContactsInfo() == false)
+                return false;
+
+            GetContactsNumber();
+
+            return true;
+        }
+
+        private bool GetContactsInfo()
+        { 
+            var cursor = Application.Context.ContentResolver.Query(CONTATCS_URI, 
+                projection, null, null, null);
+
+            if (cursor.MoveToFirst())
+            {
+                do
+                {
+                    string name = cursor.GetString(cursor.GetColumnIndex(projection[1]));
+                    int id = cursor.GetInt(cursor.GetColumnIndex(projection[0]));
+
+                    _contacts.Add(new Contact()
+                    {
+                        Name = name,
+                        ID = id
+                    });
+
+                } while (cursor.MoveToNext());
+            }
+            if (_contacts.Count == 0)
+                return false;
+
+            return true;
+        }
+
+        private bool GetContactsNumber()
+        {
+            var cursor = Application.Context.ContentResolver.Query(
+                CONTACT_PHONE_URI, projectionPhone, null, null, null);
+
+            if (cursor.MoveToFirst())
+            {
+                do
+                {                    
+                    int id = cursor.GetInt(cursor.GetColumnIndex(projection[0]));
+                    string phone = cursor.GetString(cursor.GetColumnIndex(projection[1]));
+
+                    var contact = _contacts.Where(i => i.ID == id).FirstOrDefault();
+                    if (contact == null)
+                        continue;
+
+                    contact.PhoneNumber = phone;
+
+                } while (cursor.MoveToNext());
+            }
+            if (_contacts.Count == 0)
+                return false;
+
+            return true;
         }
 
         public static Contact GetContactByNumber(string clientNumber)
@@ -79,21 +157,14 @@ namespace VisionBuddy.Droid
             // and use only digits
             return new string(PhoneNumber.Where(char.IsDigit).ToArray());
         }
+        // TODO: need to create a contact list to get the obj
+        public Contact GetContactByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
 
-        /*
-    /// <summary>
-    /// Format a phone number to current region format
-    /// </summary>
-    /// <param name="number">Formated number</param>
-    /// <returns></returns>
-    private static string FormatNumber(string number)
-    {
-        if (number == null)
-         return null;
-
-       return Android.Telephony.PhoneNumberUtils.FormatNumber(number);
-    }*/
-
+            return null;
+        }
     }
 
     public class Contact

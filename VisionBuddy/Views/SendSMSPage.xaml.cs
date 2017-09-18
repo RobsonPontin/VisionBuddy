@@ -20,9 +20,18 @@ namespace VisionBuddy.Views
             HeightRequest = MESSAGE_EDITOR_HEIGHT
         };
         Button btnSendMsg = new Button()
-        { Text = "Send"};
+        {
+            Text = "Send"
+        };
         Button btnCancel = new Button()
-        { Text = "Cancel" };
+        {
+            Text = "Cancel"
+        };
+
+        Picker picker = new Picker()
+        {
+            Title = "Select Contact"
+        };
 
         private SMSMessage _SMSMessage = new SMSMessage();
 
@@ -31,7 +40,7 @@ namespace VisionBuddy.Views
 			InitializeComponent ();
 
             _SMSMessage = SMS;
-
+            
             AssignEventsToViewElements();
 
             Content = GenerateMainView();            
@@ -46,23 +55,28 @@ namespace VisionBuddy.Views
 
         private View GenerateMainView()
         {
+            picker.Items.Add("Blabla");
+            picker.Items.Add("werwera");
+            picker.Items.Add("Bdsdsa");
+            
             var stackLayoutMain = new StackLayout()
             {
                 Orientation = StackOrientation.Vertical,
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
-
+            stackLayoutMain.Children.Add(picker);
             stackLayoutMain.Children.Add(SMSEditor);
 
             var stackLayoutBottom = new StackLayout()
             {
-                Orientation = StackOrientation.Horizontal
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.FillAndExpand
             };
 
             stackLayoutBottom.Children.Add(btnSendMsg);
             stackLayoutBottom.Children.Add(btnCancel);
 
-            return null;
+            return stackLayoutMain;
         }
 
         private void BtnSendMsg_Clicked(object sender, EventArgs e)
