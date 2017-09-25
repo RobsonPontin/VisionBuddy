@@ -3,6 +3,7 @@ using Android.Content;
 using Android.Database;
 using Android.Net;
 using Android.Provider;
+using Java.Lang;
 using System.Collections.Generic;
 using System.Linq;
 using static Android.Provider.ContactsContract;
@@ -12,18 +13,28 @@ namespace VisionBuddy.Droid
     public class ContactManager
     {
         Uri CONTATCS_URI = ContactsContract.Contacts.ContentUri;
+
         string[] projection = {
             ContactsContract.Contacts.InterfaceConsts.Id,
             ContactsContract.Contacts.InterfaceConsts.DisplayName
         };
 
         Uri CONTACT_PHONE_URI = ContactsContract.CommonDataKinds.Phone.ContentUri;
+
         string[] projectionPhone = {
             ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Id,
             ContactsContract.CommonDataKinds.Phone.Number
         };
 
         List<Contact> _contacts = new List<Contact>();
+
+        public List<Contact> Contacts
+        {
+            get
+            {
+                return _contacts;
+            }
+        }
 
         public enum ContactInfo
         {
@@ -34,17 +45,16 @@ namespace VisionBuddy.Droid
 
         public bool LoadContacts()
         {
+            // TODO: Load contacts at once            
             if (GetContactsInfo() == false)
                 return false;
-
-            GetContactsNumber();
 
             return true;
         }
 
         private bool GetContactsInfo()
-        { 
-            var cursor = Application.Context.ContentResolver.Query(CONTATCS_URI, 
+        {
+            var cursor = Application.Context.ContentResolver.Query(CONTATCS_URI,
                 projection, null, null, null);
 
             if (cursor.MoveToFirst())
@@ -54,44 +64,43 @@ namespace VisionBuddy.Droid
                     string name = cursor.GetString(cursor.GetColumnIndex(projection[1]));
                     int id = cursor.GetInt(cursor.GetColumnIndex(projection[0]));
 
+                    string phone = GetContactsNumber(id);
+
                     _contacts.Add(new Contact()
                     {
                         Name = name,
-                        ID = id
+                        ID = id,
+                        PhoneNumber = phone
                     });
 
                 } while (cursor.MoveToNext());
             }
+            cursor.Close();
+
             if (_contacts.Count == 0)
                 return false;
 
             return true;
         }
 
-        private bool GetContactsNumber()
+        private string GetContactsNumber(int contactID)
         {
+            string phone = string.Empty;
+
             var cursor = Application.Context.ContentResolver.Query(
-                CONTACT_PHONE_URI, projectionPhone, null, null, null);
+                CONTACT_PHONE_URI, projectionPhone, projectionPhone[0]+"="+contactID, null, null);
 
-            if (cursor.MoveToFirst())
+            cursor.MoveToFirst();
+
+            try
             {
-                do
-                {                    
-                    int id = cursor.GetInt(cursor.GetColumnIndex(projection[0]));
-                    string phone = cursor.GetString(cursor.GetColumnIndex(projection[1]));
-
-                    var contact = _contacts.Where(i => i.ID == id).FirstOrDefault();
-                    if (contact == null)
-                        continue;
-
-                    contact.PhoneNumber = phone;
-
-                } while (cursor.MoveToNext());
+                phone = cursor.GetString(cursor.GetColumnIndex(projectionPhone[1]));
             }
-            if (_contacts.Count == 0)
-                return false;
+            catch { }
 
-            return true;
+            cursor.Close();
+
+            return phone;
         }
 
         public static Contact GetContactByNumber(string clientNumber)
@@ -109,9 +118,7 @@ namespace VisionBuddy.Droid
 
             ICursor cursor = cr.Query(uri, projection, null, null, null);
             if (cursor == null)
-            {
                 return null;
-            }
 
             var contact = new Contact();
 
@@ -146,13 +153,15 @@ namespace VisionBuddy.Droid
                 }
                 while (itemFound);
             }
+            cursor.Close();
+
             return null;
         }
 
         private static string FormatPhoneNumberToNumbers(string PhoneNumber)
         {
             if (PhoneNumber == null)
-                return null;           
+                return null;
             // Using linq to eliminate all special characters
             // and use only digits
             return new string(PhoneNumber.Where(char.IsDigit).ToArray());

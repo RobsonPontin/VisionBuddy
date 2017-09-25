@@ -81,6 +81,7 @@ namespace VisionBuddy.Droid
                     }
                     SMSMessages.Add(item);
                 }
+                icursor.Close();
             }
             catch
             { }

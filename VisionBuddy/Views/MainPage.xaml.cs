@@ -23,7 +23,7 @@ namespace VisionBuddy
             NavigationPage.SetHasNavigationBar(this, false);
             Content = GenerateMainView();
         }
-
+        // TODO: Change que code and build the layout using the XAML
         private View GenerateMainView()
         {
             var StackLayoutForButtons = new StackLayout()
@@ -98,7 +98,6 @@ namespace VisionBuddy
 
        async private void BtnCompose_Clicked(object sender, EventArgs e)
         {
-            // open send message display
             var page = new NavigationPage(new SendSMSPage(null));
 
             await Navigation.PushModalAsync(page);
