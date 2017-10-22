@@ -9,7 +9,7 @@ namespace VisionBuddy.Droid.View
     {
         public CustomFrameRenderer()
         {
-            SetBackgroundDrawable(Resources.GetDrawable(Resource.Drawable.black_rect));
+            //SetBackgroundDrawable(Resources.GetDrawable(Resource.Drawable.black_rect));
         }
     }
 }

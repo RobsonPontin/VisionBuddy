@@ -3,4 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VisionBuddy.MessageDisplay">
 
+    <StackLayout x:Name="layoutMain" Orientation="Vertical" VerticalOptions="FillAndExpand">
+
+        <StackLayout x:Name="layoutTop" Orientation="Horizontal" VerticalOptions="FillAndExpand" Margin="5">
+            <Button x:Name="btnReturnPage" Text="Return" Clicked="BtnReturnPage_Clicked"/>
+            <Label x:Name="lbTitle" HorizontalTextAlignment="End" Text="_message.Name"/>
+        </StackLayout>
+
+        <StackLayout x:Name="layoutBottom" Orientation="Vertical">
+            <Label x:Name="lbSMSBody" HeightRequest="200" Text=""/>
+            <Button x:Name="btnRepply" Text="Repply" Clicked="BtnRepply_Clicked"/>
+
+        </StackLayout>
+        
+    </StackLayout>   
+    
 </ContentPage>

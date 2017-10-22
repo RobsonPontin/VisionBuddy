@@ -6,6 +6,7 @@ using Android.Provider;
 using Java.Lang;
 using System.Collections.Generic;
 using System.Linq;
+using VisionBuddy.Droid.Models;
 using static Android.Provider.ContactsContract;
 
 namespace VisionBuddy.Droid
@@ -166,28 +167,20 @@ namespace VisionBuddy.Droid
             // and use only digits
             return new string(PhoneNumber.Where(char.IsDigit).ToArray());
         }
+
         // TODO: need to create a contact list to get the obj
         public Contact GetContactByName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return null;
 
+            foreach (Contact contact in Contacts)
+            {
+                if (contact.Name == name)
+                    return contact;
+            }
+
             return null;
-        }
-    }
-
-    public class Contact
-    {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public string PhoneNumber { get; set; }
-
-        public string GetNameOrtherwiseNumber()
-        {
-            if (string.IsNullOrWhiteSpace(Name))
-                return PhoneNumber;
-
-            return Name;
         }
     }
 }

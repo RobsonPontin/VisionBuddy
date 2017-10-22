@@ -2,4 +2,29 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VisionBuddy.Views.SendSMSPage">
+
+    <StackLayout x:Name="mainLayout">
+        <StackLayout x:Name="topLayout" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+            <Button x:Name="btnReturn" Text="Return" Clicked="BtnReturn_Clicked"/>
+
+        </StackLayout>
+
+        <StackLayout x:Name="middleLayout" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+            <!--            
+            explicit height due a framework bug that will hide
+            the component unless a height is defined
+            link: ????
+            -->
+            <Picker x:Name="pickerContact" Title="Select Contact" HeightRequest="50" SelectedIndexChanged="Picker_SelectedIndexChanged"/>
+            <Editor x:Name="editorSMS" HeightRequest="150" Completed="SMSEditor_Completed"/>
+
+        </StackLayout>
+        
+        <StackLayout x:Name="bottomLayout" Orientation="Vertical" VerticalOptions="FillAndExpand">
+            <Button x:Name="btnSendMsg" Text="Send Message" Clicked="BtnSendMsg_Clicked"/>
+            <Button x:Name="btnCancel" Text="Cancel" Clicked="BtnCancel_Clicked"/>
+
+        </StackLayout>
+    </StackLayout>
+
 </ContentPage>

@@ -4,6 +4,7 @@ using Android.Database;
 using Android.Telephony;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using VisionBuddy.Droid.Models;
 using static VisionBuddy.Droid.ContactManager;
 
 namespace VisionBuddy.Droid
@@ -120,23 +121,5 @@ namespace VisionBuddy.Droid
 
             return true;
         }
-    }
-    
-    public class SMSMessage
-    {
-        public SMSMessage()
-        {
-            contact = new Contact();
-        }
-        public int SMSID { get; set; }
-        public string Name
-        {
-            get { return contact.GetNameOrtherwiseNumber(); }
-        }
-
-        public string Body { get; set; }
-        public string Date { get; set; }
-
-        public Contact contact { get; set; }
     }
 }

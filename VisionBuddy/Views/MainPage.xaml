@@ -2,6 +2,36 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:VisionBuddy"
-             x:Class="VisionBuddy.MainPage">   
+             x:Class="VisionBuddy.MainPage">
+
+    <StackLayout x:Name="mainLayout" Orientation="Vertical" Spacing="5">
+
+        <StackLayout x:Name="topLayout" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+            <Button x:Name="btnInbox" Text="Inbox" HorizontalOptions="FillAndExpand" Clicked="BtnInbox_Clicked"/>
+            <Button x:Name="btnSent" Text="Sent" HorizontalOptions="FillAndExpand" Clicked="BtnSent_Clicked"/>
+            <Button x:Name="btnCompose" Text="Compose" HorizontalOptions="FillAndExpand" Clicked="BtnCompose_Clicked"/>
+            <!-- The search bar height must be specified due a bug on android 7.0
+                 https://forums.xamarin.com/discussion/79446/is-there-support-for-searchbar-on-nougat-7-0-->
+            <SearchBar x:Name="searchBar" Placeholder="Enter the Contact Name" VerticalOptions="FillAndExpand" HeightRequest="100" SearchButtonPressed="SearchBar_SearchButtonPressed"/>
+        </StackLayout>
+
+        <StackLayout x:Name="bottomLayout" Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <ListView x:Name="lvSMSMessages" ItemTapped="LvDisplay_ItemTapped" ItemsSource="SMSManager.SMSMessages">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout x:name="lvLayout">
+                                <Label x:Name="lbSMSBody" Text="{Binding Body}"/>
+                                <Label x:Name="lbName" Text="{Binding Name}"/>
+                                <Label x:NAme="lbDate" Text="{Binding Date}"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackLayout>
+
+    </StackLayout>
 
 </ContentPage>

@@ -2,6 +2,7 @@
 using Android.Views.InputMethods;
 using System;
 using VisionBuddy.Droid;
+using VisionBuddy.Droid.Models;
 using VisionBuddy.Tools;
 using VisionBuddy.Views;
 using Xamarin.Forms;
@@ -13,7 +14,6 @@ namespace VisionBuddy
     //[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MessageDisplay : ContentPage
     {
-        const int MESSAGE_TEXT_BOX_HEIGHT = 200;
         const int STACKLAYOUT_MARGIN = 5;
 
         SMSMessage _message = new SMSMessage();
@@ -32,72 +32,12 @@ namespace VisionBuddy
             // removing the Title bar
             NavigationPage.SetHasNavigationBar(this, false);
             _message = message;
-            Content = GenerateMainView();
 
-            //editorReply.Completed += EditorReply_Completed;
-
-            editorReply.HeightRequest = 200;
+            // Need to use SetBinding() for Message
+            // lbTitle.SetBinding(_message.Name, _message);
+            // lbTitle.SetBinding(Button.TextProperty, "Name");
             
-           // lbMessage.Text = message.Body;
-        }
-
-        private View GenerateMainView()
-        {
-            // Top StackLayout with label (name or phone number) + button (return)
-            // Middle StackLayout Body Message + Button (Write Message)
-
-            var stackLayoutMain = new StackLayout()
-            {
-                Orientation = StackOrientation.Vertical,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
-
-            var stackLayoutTop = new StackLayout()
-            {
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Margin = STACKLAYOUT_MARGIN,                
-            };
-
-            var btnReturnPage = new Button()
-            {
-                Text = "Return"
-            };
-            btnReturnPage.Clicked += BtnReturnPage_Clicked;
-
-            var lbTitle = new Label()
-            {
-                Text = _message.Name,
-                HorizontalTextAlignment = TextAlignment.Center
-            };
-
-            stackLayoutTop.Children.Add(btnReturnPage);
-            stackLayoutTop.Children.Add(lbTitle);
-
-            var stackLayoutMiddle = new StackLayout()
-            {
-                Orientation = StackOrientation.Vertical
-            };
-
-            var lbSMSBody = new Label()
-            {
-                Text = _message.Body,
-                HeightRequest = MESSAGE_TEXT_BOX_HEIGHT,
-            };
-
-            var btnRepply = new Button()
-            {
-                Text = "Repply"
-            };
-            btnRepply.Clicked += BtnRepply_Clicked;
-
-            stackLayoutMiddle.Children.Add(lbSMSBody);
-            stackLayoutMiddle.Children.Add(btnRepply);
-
-            stackLayoutMain.Children.Add(stackLayoutTop);
-            stackLayoutMain.Children.Add(stackLayoutMiddle);
-
-            return stackLayoutMain;
+            editorReply.HeightRequest = 200;
         }
 
         private void BtnReturnPage_Clicked(object sender, EventArgs e)
