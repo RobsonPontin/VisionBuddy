@@ -16,11 +16,12 @@
         </StackLayout>
 
         <StackLayout x:Name="bottomLayout" Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <ListView x:Name="lvSMSMessages" ItemTapped="LvDisplay_ItemTapped" ItemsSource="SMSManager.SMSMessages">
+
+            <ListView x:Name="lvSMSMessages" ItemTapped="LvDisplay_ItemTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout x:name="lvLayout">
+                            <StackLayout x:name="lvLayout" Orientation="Vertical">
                                 <Label x:Name="lbSMSBody" Text="{Binding Body}"/>
                                 <Label x:Name="lbName" Text="{Binding Name}"/>
                                 <Label x:NAme="lbDate" Text="{Binding Date}"/>
@@ -29,9 +30,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
+            
         </StackLayout>
-
     </StackLayout>
-
 </ContentPage>

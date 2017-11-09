@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using VisionBuddy.Droid;
 using VisionBuddy.Droid.Models;
 using VisionBuddy.Tools;
@@ -13,13 +14,17 @@ namespace VisionBuddy
         const int LAYOUT_SPACING = 10;
         const int SEARCHBAR_EXPLICITY_HEIGHT = 100;
 
-        SMSManager SMSManager = new SMSManager();
+        private SMSManager _SMSManager = new SMSManager();
+
 
         public MainPage()
         {
             InitializeComponent();
 
-            NavigationPage.SetHasNavigationBar(this, false);            
+            NavigationPage.SetHasNavigationBar(this, false);
+            // TODO: I tried to setup binding through XAML but no success
+            // it is necessary to check how to setup ItemSource correctly
+            // lvSMSMessages.ItemsSource = _SMSManager.SMSMessages;
         }
        
        async private void BtnCompose_Clicked(object sender, EventArgs e)
@@ -38,7 +43,7 @@ namespace VisionBuddy
             if (string.IsNullOrWhiteSpace(searchBar.Text))
                 return;
 
-            SMSManager.SortSMSMessagesBy(searchBar.Text);
+            _SMSManager.SortSMSMessagesBy(searchBar.Text);
         }
 
         // After clicking the system should give a feedback saying which
@@ -51,34 +56,55 @@ namespace VisionBuddy
 
             // "Button" + btnClicked.Text + "selected"
         }
-
+        
         private void BtnSent_Clicked(object sender, EventArgs e)
         {
-            SMSManager.LoadSMSMessages(SMSManager.SMSType.Sent);
+            _SMSManager.LoadSMSMessages(SMSManager.SMSType.Sent);
         }
 
         private void BtnInbox_Clicked(object sender, EventArgs e)
         {
-            SMSManager.LoadSMSMessages(SMSManager.SMSType.Inbox);
+            LoadInboxSMSMessages();
+        }
+        // TDOO: REUSE
+        async private void LoadInboxSMSMessages()
+        {            
+            await Task.Factory.StartNew(LoadInboxSMSFromDB);
+
+            PopulateMainLV();
         }
 
-        private DataTemplate GetSettingsDataTemplate()
+        private void LoadInboxSMSFromDB()
         {
-            var smsDataTemplate = new DataTemplate(() =>
-            {
-                var stackLayout = new StackLayout();
-
-                var showDateLabel = new Label { FontAttributes = FontAttributes.Bold, Text = "Show Date?" };
-                var switchTest = new Switch();
-
-                stackLayout.Children.Add(showDateLabel);
-                stackLayout.Children.Add(switchTest);
-
-                return new ViewCell { View = stackLayout };
-            });
-            return smsDataTemplate;
+            _SMSManager.LoadSMSMessages(SMSManager.SMSType.Inbox);
         }
-        // TODO: async and await????
+
+        async private void LoadSentSMSMessages()
+        {
+            await Task.Factory.StartNew(LoadSentSMSFromDB);
+
+            PopulateMainLV();
+        }
+
+        private void LoadSentSMSFromDB()
+        {
+            _SMSManager.LoadSMSMessages(SMSManager.SMSType.Sent);
+        }
+
+        private void PopulateMainLV()
+        {   
+            BindMainLV();
+        }
+
+        private void BindMainLV()
+        {
+            if (lvSMSMessages.ItemsSource != null)
+                return;
+            // TODO: Use Adapter to populate listview, binding the view to the
+            // object is causing performance issues
+            lvSMSMessages.ItemsSource = _SMSManager.SMSMessages;
+        }
+
         async private void LvDisplay_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             var lv = sender as ListView;
@@ -96,3 +122,29 @@ namespace VisionBuddy
         }
     }
 }
+
+// TODO: I'm using observable to update listview, it would be better to populate the listview manually
+// to increase performance. First step is loading everything from DB and after that populate the LV// 
+// To populate use: Activity.RunOnUIThread()
+
+    // TODO: Remove after running in hardware test
+/*
+ private DataTemplate GetSettingsDataTemplate()
+    {
+        var smsDataTemplate = new DataTemplate(() =>
+        {
+            var stackLayout = new StackLayout();
+
+            var showDateLabel = new Label { FontAttributes = FontAttributes.Bold, Text = "Show Date?" };
+            var switchTest = new Switch();
+
+            stackLayout.Children.Add(showDateLabel);
+            stackLayout.Children.Add(switchTest);
+
+            return new ViewCell { View = stackLayout };
+        });
+        return smsDataTemplate;
+    }
+
+
+ */

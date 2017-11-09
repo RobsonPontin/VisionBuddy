@@ -11,7 +11,7 @@
 namespace VisionBuddy {
     
     
-    [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("C:\\Users\\Robson\\documents\\visual studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\Vis" +
+    [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("C:\\Users\\Robson\\Documents\\Visual Studio 2017\\Projects\\VisionBuddy\\VisionBuddy\\Vis" +
         "ionBuddy\\Views\\MainPage.xaml")]
     public partial class MainPage : global::Xamarin.Forms.ContentPage {
         

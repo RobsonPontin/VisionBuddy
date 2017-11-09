@@ -9,7 +9,7 @@ using static VisionBuddy.Droid.ContactManager;
 
 namespace VisionBuddy.Droid
 {
-    class SMSManager
+    public class SMSManager
     {
         private const string URI_INBOX = "content://sms/inbox";
         private const string URI_SENT = "content://sms/sent";
@@ -113,7 +113,7 @@ namespace VisionBuddy.Droid
 
         public static bool SendSMS(string message, Contact contact)
         {
-            if ((message == null) || (contact.PhoneNumber == null))
+            if ((message == null) || (string.IsNullOrWhiteSpace(contact.PhoneNumber)))
                 return false;
 
             SmsManager.Default.SendTextMessage(contact.PhoneNumber, null, message,

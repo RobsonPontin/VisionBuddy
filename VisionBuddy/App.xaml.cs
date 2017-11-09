@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace VisionBuddy
 {
@@ -11,13 +6,13 @@ namespace VisionBuddy
     {
         public App()
         {
-            InitializeComponent();           
+            InitializeComponent();
         }
 
         protected override void OnStart()
         {
             // Set MainPage XAML as a root page of the Navigation Architecture
-            var mainPage = new NavigationPage(new MainPage());                       
+            var mainPage = new NavigationPage(new MainPage());
             MainPage = mainPage;
         }
 
@@ -32,3 +27,7 @@ namespace VisionBuddy
         }
     }
 }
+
+// Backlog
+// TODO: Fix Listview not displaying sms messages
+// TODO: Separate processing from the main thread. Performance is very bad now
